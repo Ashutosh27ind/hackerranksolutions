@@ -29,8 +29,11 @@ def readexcel():
     if os.getcwd() != base_location:
         os.chdir(base_location)
     logging.info("Working directory changed to {0}".format(os.getcwd()))
+    # declare separate arrays for lb and ca
+    lb_rows = []
+    ca_rows = []
     for f in os.listdir(os.curdir):
-        if f.endswith("xlsx") or f.endswith('xls'):
+        if f.endswith('xlsx') or f.endswith('xls'):
             try:
                 workbook = xlrd.open_workbook(f)
             except FileNotFoundError as fnf:
@@ -42,8 +45,6 @@ def readexcel():
             # nsheet = workbook.nsheets
             logging.info('Number of Sheets in the excel {0} is {1}'.format(f, workbook.nsheets))
             # 2 lists for storing records of different brands
-            lb_rows = []
-            ca_rows = []
             for c in range(workbook.nsheets):
                 worksheet = workbook.sheet_by_index(c)
                 # print worksheet name
@@ -96,11 +97,15 @@ def readexcel():
                 except InvalidFormat:
                     logging.warning(
                         'Data in sheet {0} is not in proper format. Moving to next sheet.'.format(worksheet.name))
+                    # changed the file extension sop that it's not picked up
+                    os.rename(f, f + '.ERROR')
                     continue
                 except Exception as e:
-                    print(e)
+                    os.rename(f, f + '.ERROR')
+                    logging.error(e)
                     continue
-            return lb_rows, ca_rows
+
+    return lb_rows, ca_rows
 
 
 def perform_database_operations(conn, row, usr):
