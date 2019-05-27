@@ -7,8 +7,8 @@ import logging
 
 # Set logging level and config.
 
-logging.basicConfig(filename='uda_upload_automator.log', format='%(asctime)s-%(message)s', level=logging.INFO)
-
+logging.basicConfig(filename='uda_upload_automator.log', filemode='w', format='%(asctime)s- %(levelname)s- %(message)s',
+                    level=logging.INFO)
 
 # Make custom user defined exception
 
@@ -21,6 +21,10 @@ class InvalidBrand(Exception):
 class InvalidFormat(Exception):
     """Raised when columns numbers are not 2 or 3"""
     pass
+
+
+# Variable to hold successfully processed files name
+processedFiles = []
 
 
 def readexcel():
@@ -36,6 +40,7 @@ def readexcel():
         if f.endswith('xlsx') or f.endswith('xls'):
             try:
                 workbook = xlrd.open_workbook(f)
+                print('File: '+f)
             except FileNotFoundError as fnf:
                 logging.error("File {0} not found inside working directory {1} ".format(f, os.getcwd()))
                 quit(255)
@@ -94,6 +99,7 @@ def readexcel():
                     else:
                         logging.warning(
                             "Sheet <{0}> Without Brand Identifier Found, Please Investigate".format(worksheet.name))
+                        continue
                 except InvalidFormat:
                     logging.warning(
                         'Data in sheet {0} is not in proper format. Moving to next sheet.'.format(worksheet.name))
@@ -104,6 +110,8 @@ def readexcel():
                     os.rename(f, f + '.ERROR')
                     logging.error(e)
                     continue
+                else:
+                    processedFiles.append(f)
 
     return lb_rows, ca_rows
 
@@ -113,22 +121,22 @@ def perform_database_operations(conn, row, usr):
     cursor = conn.cursor()
     # Clean up the tables
     logging.info('Cursor Opened. Now proceeding to truncate the staging table.')
-    statment = """TRUNCATE TABLE {0}.uda_upload_stage""".format(usr)
+    statement = """TRUNCATE TABLE {0}.uda_upload_stage""".format(usr)
     if append_data == 'N':
-        cursor.execute(statment)
+        cursor.execute(statement)
         logging.info("{0}.uda_upload_stage Truncated".format(usr))
     else:
         pass
     # logging.INFO('staging table truncated.')
     cursor.bindarraysize = 10000
     cursor.setinputsizes(25, 2, 5, 5, int)
-    statment = """INSERT INTO {0}.uda_upload_stage VALUES (:1,:2,:3,:4,:5)""".format(usr)
-    cursor.executemany(statment, row)
+    statement = """INSERT INTO {0}.uda_upload_stage VALUES (:1,:2,:3,:4,:5)""".format(usr)
+    cursor.executemany(statement, row)
     logging.info("Number of rows inserted {0}".format(cursor.rowcount))
     # logging.INFO('Successfully inserted the rows into database.')
     logging.info("Proceeding to delete duplicate records in {0}.uda_upload_stage".format(usr))
     # Remove duplicates
-    statment = """
+    statement = """
 			DELETE FROM {0}.uda_upload_stage a 
 			 WHERE	a.ROWID > (SELECT Min(b.ROWID) 
 								 FROM	{0}.uda_upload_stage b 
@@ -137,8 +145,8 @@ def perform_database_operations(conn, row, usr):
 								  AND a.uda_value = b.uda_value) 
 			   AND item_type = 'S'	 
 	""".format(usr)
-    cursor.execute(statment)
-    logging.info(statment)
+    cursor.execute(statement)
+    logging.info(statement)
     logging.info("{0} duplicate SKU records are deleted".format(cursor.rowcount))
     statement = """
 			DELETE FROM {0}.uda_upload_stage a 
@@ -150,8 +158,8 @@ def perform_database_operations(conn, row, usr):
 								  AND a.color_code = b.color_code) 
 			  AND item_type = 'STY'
 	""".format(usr)
-    logging.info(statment)
-    cursor.execute(statment)
+    logging.info(statement)
+    cursor.execute(statement)
     logging.info("{0} duplicate Style records are deleted".format(cursor.rowcount))
     conn.commit()
     logging.info('Committed')
@@ -162,9 +170,9 @@ if __name__ == '__main__':
     # Get the file location.
     user = sys.argv[1]
     password = sys.argv[2]
-    brand = sys.argv[3]
-    file = sys.argv[4]
-    append_data = sys.argv[5]
+    # brand = sys.argv[3]
+    # file = sys.argv[4]
+    append_data = sys.argv[3]
 
     # Make connection to Oracle
     LB_dsnString = cx_Oracle.makedsn('l00coelbrmsdb01.corp.local', '1521', 'rmscoe')
@@ -173,14 +181,17 @@ if __name__ == '__main__':
     rows_lb, rows_ca = readexcel()
     # print(rows)
     try:
-        if not rows_lb:
+        if rows_lb:
             connect_lb = cx_Oracle.connect(user, password, LB_dsnString)
             # Make connection to LB database.
             perform_database_operations(connect_lb, rows_lb, user)
-        if not rows_ca:
+        if rows_ca:
             connect_ca = cx_Oracle.connect(user, password, CA_dsnString)
             perform_database_operations(connect_ca, rows_ca, user)
     except Exception as e:
         print(e)
         quit(255)
+    else:
+        for file in set(processedFiles):
+            os.rename(file, file + '.DONE')
     quit(0)
