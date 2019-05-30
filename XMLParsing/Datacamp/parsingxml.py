@@ -17,7 +17,7 @@ for child in root:
 all_tags = [elem.tag for elem in root.iter()]
 print(type(all_tags))
 print(len(all_tags))
-
+# commit
 # print(et.tostring(root, encoding='utf8').decode('utf8'))
 for movie in root.iter('movie'):
     print(movie.attrib)
