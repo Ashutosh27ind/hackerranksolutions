@@ -4,7 +4,7 @@ import cx_Oracle
 import re
 import sys
 import logging
-import traceback
+
 
 """
 Program: UDA_UPLOAD_AUTOMATOR.py
