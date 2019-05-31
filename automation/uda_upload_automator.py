@@ -15,6 +15,7 @@ Author: Asfakul Laskar
 001 added change to handle multile file at once.
 002 made change to ignore hidden sheets
 003 if successfully processed, file will be marked as .DONE
+004 modified logging to include complete stack trace of exception.
 
 """
 
@@ -66,28 +67,28 @@ def readexcel():
                         logging.info("LB Sheet Found, Processing {0}".format(worksheet.name))
                         uda_id = int(re.findall('[0-9]+', worksheet.name).pop(0))
                         for r in range(1, worksheet.nrows):
-                            sku = str(worksheet.cell(r, 0).value).strip()
+                            sku = int(worksheet.cell(r, 0).value)
                             if worksheet.ncols == 2:
-                                color = ' '
-                                val = str(worksheet.cell(r, 1).value).strip()
+                                color = 0
+                                val = worksheet.cell(r, 1).value
                                 itemtype = 'S'
                             elif worksheet.ncols == 3:
-                                color = str(worksheet.cell(r, 1).value).strip()
-                                val = str(worksheet.cell(r, 2).value).strip()
+                                color = int(worksheet.cell(r, 1).value)
+                                val = worksheet.cell(r, 2).value
                                 itemtype = 'STY'
                             lb_rows.append((sku, itemtype, color, val, uda_id))
                     elif worksheet.name.count('CA') != 0:
                         logging.info("CA Sheet Found, Processing {0}".format(worksheet.name))
                         uda_id = int(re.findall('[0-9]+', worksheet.name).pop(0))
                         for r in range(1, worksheet.nrows):
-                            sku = str(worksheet.cell(r, 0).value).strip()
+                            sku = int(worksheet.cell(r, 0).value)
                             if worksheet.ncols == 2:
-                                color = ' '
-                                val = str(worksheet.cell(r, 1).value).strip()
+                                color = 0
+                                val = worksheet.cell(r, 1).value
                                 itemtype = 'S'
                             elif worksheet.ncols == 3:
-                                color = str(worksheet.cell(r, 1).value).strip()
-                                val = str(worksheet.cell(r, 2).value).strip()
+                                color = int(worksheet.cell(r, 1).value)
+                                val = worksheet.cell(r, 2).value
                                 itemtype = 'STY'
                             ca_rows.append((sku, itemtype, color, val, uda_id))
                     else:
