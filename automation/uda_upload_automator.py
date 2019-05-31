@@ -192,8 +192,8 @@ if __name__ == '__main__':
             connect_ca = cx_Oracle.connect(user, password, CA_dsnString)
             perform_database_operations(connect_ca, rows_ca, user)
     except Exception as e:
-        logging.error('Error During validations in main block', exc_info = True)
-        quit(255)
+        logging.error('Error During validations in main block', exc_info=True)
+        quit(1)
     else:
         for file in set(processedFiles):
             os.rename(file, file + '.DONE')
