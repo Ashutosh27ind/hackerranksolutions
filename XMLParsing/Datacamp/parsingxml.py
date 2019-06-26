@@ -1,18 +1,23 @@
 import os
 import datetime
 import xml.etree.ElementTree as et
+import csv
 
 # Open the XML
-# tree = et.parse('movies.xml')
-# # Get the root element
-# root = tree.getroot()
-
-tree = et.parse('short.xml')
+tree = et.parse('cd.xml')
+# Get the root element
 root = tree.getroot()
-for head in root.findall('//with_attributes'):
-    name = head.attrib.get('name')
-    print(name)
 
+# with open('out.txt', 'a',newline='') as file:
+#     file_writer = csv.writer(file, delimiter='|')
+#     for cd in root.findall('CD'):
+#         title = cd.find('TITLE').text
+#         print(title)
+#         country = cd.find('COUNTRY').text
+#         print(country)
+#         file_writer.writerow([title, country])
+#
+# file.close()
 
 # print(root.tag)
 # print(root.attrib)
