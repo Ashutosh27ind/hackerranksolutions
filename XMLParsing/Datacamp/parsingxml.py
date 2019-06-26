@@ -8,6 +8,9 @@ tree = et.parse('cd.xml')
 # Get the root element
 root = tree.getroot()
 
+
+
+
 # with open('out.txt', 'a',newline='') as file:
 #     file_writer = csv.writer(file, delimiter='|')
 #     for cd in root.findall('CD'):
