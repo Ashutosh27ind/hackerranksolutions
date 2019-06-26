@@ -3,9 +3,16 @@ import datetime
 import xml.etree.ElementTree as et
 
 # Open the XML
-tree = et.parse('movies.xml')
-# Get the root element
+# tree = et.parse('movies.xml')
+# # Get the root element
+# root = tree.getroot()
+
+tree = et.parse('short.xml')
 root = tree.getroot()
+for head in root.findall('//with_attributes'):
+    name = head.attrib.get('name')
+    print(name)
+
 
 # print(root.tag)
 # print(root.attrib)
@@ -19,8 +26,11 @@ root = tree.getroot()
 # print(et.tostring(root, encoding='utf8').decode('utf8'))
 
 # XPath
-for movie in root.findall("./genre/decade/movie/[year='1979']"):
-    print(movie.attrib)
+# for movie in root.findall("./genre/decade/movie/[year='1979']"):
+#     print(movie.attrib)
+#
+# for desc in root.iter('description'):
+#     print(desc.text)
 
-for desc in root.iter('description'):
-    print(desc.text)
+
+
