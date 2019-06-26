@@ -1,4 +1,5 @@
-val_1, val_2 = input()
-print(val_1)
-print(val_2)
+import datetime
+import pytz
 
+tday = datetime.datetime.now(tz=pytz.timezone('Asia/Kolkata'))
+print(tday.strftime('%b%d %H:%M %p'))
