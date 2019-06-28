@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <collection>
     <genre category="Action">
         <decade years="1980s">
@@ -18,7 +17,7 @@
                <rating>PG</rating>
                <description>None provided.</description>
             </movie>
-            <movie favorite="False" title="Back 2 the Future">
+            <movie favorite="False" title="Back To the Future">
                <format multiple="False">Blu-ray</format>
                <year>1985</year>
                <rating>PG</rating>
@@ -50,7 +49,7 @@
 
     <genre category="Thriller">
         <decade years="1970s">
-            <movie favorite="False" title="ALIEN">
+            <movie favorite="False" title="Alien">
                 <format multiple="Yes">DVD</format>
                 <year>1979</year>
                 <rating>R</rating>

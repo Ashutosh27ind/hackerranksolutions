@@ -4,9 +4,19 @@ import xml.etree.ElementTree as et
 import csv
 
 # Open the XML
-tree = et.parse('cd.xml')
+tree = et.parse('movies.xml')
 # Get the root element
 root = tree.getroot()
+
+b2ft = root.find("./genre/decade/movie[@title = 'ALIEN']")
+
+b2ft.attrib["title"] = 'Alien'
+print(b2ft.attrib["title"])
+print(b2ft.attrib["favorite"])
+tree.write('movies.xml')
+
+print(et.tostring(root, encoding='utf8').decode('utf8'))
+
 
 # for cd in root.findall('CD'):
 #     # print('%s- %s- %s- %s- %s- %s' %(cd.find('TITLE').text,cd.find('ARTIST').text,cd.find('COUNTRY').text,cd.find('PRICE').text,cd.find('COUNTRY').text,
