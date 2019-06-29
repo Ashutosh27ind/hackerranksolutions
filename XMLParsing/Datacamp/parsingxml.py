@@ -2,21 +2,53 @@ import os
 import datetime
 import xml.etree.ElementTree as et
 import csv
+import re
 
 # Open the XML
 tree = et.parse('movies.xml')
 # Get the root element
 root = tree.getroot()
 
-b2ft = root.find("./genre/decade/movie[@title = 'ALIEN']")
+# add node
 
-b2ft.attrib["title"] = 'Alien'
-print(b2ft.attrib["title"])
-print(b2ft.attrib["favorite"])
-tree.write('movies.xml')
+for decade in root.findall("./genre/decade"):
+    print(decade.attrib)
+    for year in decade.findall("./movie/year"):
+        print(year.text)
 
-print(et.tostring(root, encoding='utf8').decode('utf8'))
+action = root.find("./genre[@category = 'Action'")
+new_decade = et.SubElement(action, 'decade')
 
+
+
+
+
+
+
+
+
+
+
+# Correct Data
+
+# for form in root.findall("./genre/decade/movie/format"):
+#     match = re.search(',', form.text)
+#     if match:
+#         form.set('multiple', 'Yes')
+#     else:
+#         form.set('multiple', 'No')
+#
+# # tree.write('movies.xml')
+# # print xml
+# print(et.tostring(root, encoding='utf8').decode('utf8'))
+
+# b2ft = root.find("./genre/decade/movie[@title = 'ALIEN']")
+# b2ft.attrib["title"] = 'Alien'
+# print(b2ft.attrib["title"])
+# print(b2ft.attrib["favorite"])
+# tree.write('movies.xml')
+#
+# print(et.tostring(root, encoding='utf8').decode('utf8'))
 
 # for cd in root.findall('CD'):
 #     # print('%s- %s- %s- %s- %s- %s' %(cd.find('TITLE').text,cd.find('ARTIST').text,cd.find('COUNTRY').text,cd.find('PRICE').text,cd.find('COUNTRY').text,

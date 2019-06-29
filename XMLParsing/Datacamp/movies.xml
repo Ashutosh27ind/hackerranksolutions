@@ -18,7 +18,7 @@
                <description>None provided.</description>
             </movie>
             <movie favorite="False" title="Back To the Future">
-               <format multiple="False">Blu-ray</format>
+               <format multiple="No">Blu-ray</format>
                <year>1985</year>
                <rating>PG</rating>
                <description>Marty McFly</description>
@@ -50,7 +50,7 @@
     <genre category="Thriller">
         <decade years="1970s">
             <movie favorite="False" title="Alien">
-                <format multiple="Yes">DVD</format>
+                <format multiple="No">DVD</format>
                 <year>1979</year>
                 <rating>R</rating>
                 <description>"""""""""</description>
